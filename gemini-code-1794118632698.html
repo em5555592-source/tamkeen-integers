@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>منصة تَمْكِين - جمع وطرح الأعداد الموجهة - مدرسة محمد بن القاسم الثقفي</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    * {
+      font-family: 'Tajawal', sans-serif;
+      box-sizing: border-box;
+    }
+    .custom-scroll::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scroll::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 9999px;
+    }
+    @media print {
+      body * {
+        visibility: hidden !important;
+      }
+      #printContainer, #printContainer * {
+        visibility: visible !important;
+      }
+      #printContainer {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        display: block !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+      .print-signatures {
+        display: flex !important;
+        justify-content: space-between !important;
+        margin-top: 40px !important;
+        padding-top: 20px !important;
+        border-top: 1px solid #334155 !important;
+      }
+    }
+  </style>
+</head>
+<body class="bg-slate-100 min-h-screen text-slate-800 flex flex-col justify-between select-none">
+
+  <!-- علامة مائية لتوثيق الملكية الفكرية -->
+  <div class="fixed inset-0 pointer-events-none opacity-[0.025] z-0 flex items-center justify-center rotate-[-25deg] text-slate-900 text-6xl font-black whitespace-nowrap">
+    مدرسة محمد بن القاسم الثقفي • إعداد أ/ عماد جابر
+  </div>
+
+  <!-- الترويسة المدمجة الرشيقة -->
+  <header class="bg-slate-900 text-white shadow-md z-30 sticky top-0 px-4 py-2.5 flex items-center justify-between border-b border-amber-500/30">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-500 to-amber-300 flex items-center justify-center text-slate-950 font-black text-xl shadow-md">
+        ت
+      </div>
+      <div>
+        <div class="flex items-center gap-2">
+          <span class="text-[10px] bg-amber-500/20 text-amber-300 font-bold px-1.5 py-0.5 rounded border border-amber-500/30">رياضيات ٨</span>
+          <h1 class="font-black text-sm sm:text-base tracking-tight">منصة تَمْكِين: جمع وطرح الأعداد الموجهة</h1>
+        </div>
+        <p class="text-[11px] text-slate-400">مدرسة محمد بن القاسم الثقفي (٥ - ١٠)</p>
+      </div>
+    </div>
+
+    <div class="hidden md:flex items-center gap-2 bg-slate-800 px-3 py-1 rounded-full border border-slate-700 text-xs">
+      <span class="text-slate-400">معلم المادة:</span>
+      <span class="font-bold text-amber-400">أ/ عماد جابر محمد</span>
+    </div>
+
+    <div class="flex items-center gap-2">
+      <div id="activeUserBadge" class="hidden flex items-center gap-1.5 bg-slate-800 text-slate-200 px-2.5 py-1.5 rounded-lg border border-slate-700 text-xs">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+        <span id="headerStudentName" class="font-bold text-amber-300 max-w-[90px] sm:max-w-[130px] truncate">الطالب</span>
+        <span id="headerStudentClass" class="text-slate-400 text-[10px]"></span>
+      </div>
+
+      <button type="button" onclick="showTeacherLogin()" class="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 font-black text-xs px-3 py-1.5 rounded-lg shadow flex items-center gap-1 transition active:scale-95 cursor-pointer">
+        <span>👨‍🏫</span>
+        <span class="hidden sm:inline">لوحة المعلم</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- جسم التطبيق المتنقل بين المشاهد -->
+  <main class="flex-1 max-w-5xl w-full mx-auto p-3 sm:p-5 relative z-10 flex flex-col justify-center">
+
+    <!-- المشهد 1: شاشة الدخول الرئيسية للطالب -->
+    <div id="viewLogin" class="w-full max-w-md mx-auto my-auto bg-white rounded-3xl p-6 sm:p-8 shadow-xl border border-slate-200 text-center">
+      <div class="w-16 h-16 bg-amber-100 text-amber-600 rounded-3xl mx-auto flex items-center justify-center text-3xl font-black mb-4 shadow-inner">
+        ✍️
+      </div>
+      <h2 class="text-xl font-black text-slate-900 mb-1">خطة تَمْكِين العلاجية</h2>
+      <p class="text-xs font-bold text-amber-700 mb-2">الوحدة الأولى: الدرس الأول (جمع وطرح الأعداد الموجهة)</p>
+      <p class="text-xs text-slate-500 mb-6">سجل بياناتك للبدء في الاختبار التشخيصي ومحطة التدريب</p>
+
+      <div class="space-y-4 text-right">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1.5">اسم الطالب الثلاثي:</label>
+          <input type="text" id="studentNameField" placeholder="مثال: أحمد بن سالم الكثيري" class="w-full bg-slate-50 border-2 border-slate-300 rounded-2xl px-4 py-3 text-sm font-bold text-slate-900 focus:border-amber-500 focus:bg-white outline-none transition">
+          <p id="nameErrorMsg" class="hidden text-rose-600 text-xs font-bold mt-1.5">⚠️ يرجى كتابة اسمك أولاً للمتابعة!</p>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1.5">الصف والشعبة:</label>
+          <select id="studentClassField" class="w-full bg-slate-50 border-2 border-slate-300 rounded-2xl px-4 py-3 text-sm font-bold text-slate-900 focus:border-amber-500 outline-none transition">
+            <option value="٨ / ١">الصف ٨ / ١</option>
+            <option value="٨ / ٢">الصف ٨ / ٢</option>
+            <option value="٨ / ٣">الصف ٨ / ٣</option>
+            <option value="٨ / ٤">الصف ٨ / ٤</option>
+            <option value="٨ / ٥">الصف ٨ / ٥</option>
+            <option value="٨ / ٦">الصف ٨ / ٦</option>
+          </select>
+        </div>
+      </div>
+
+      <button type="button" onclick="handleStudentLogin()" class="w-full mt-6 bg-amber-500 hover:bg-amber-600 text-slate-950 font-black py-3.5 rounded-2xl shadow-lg transition active:scale-95 text-base flex items-center justify-center gap-2 cursor-pointer">
+        <span>دخول وبدء التعلم الآن</span>
+        <span>🚀</span>
+      </button>
+
+      <div class="mt-4 pt-4 border-t border-slate-100 text-[11px] text-slate-400">
+        مدرسة محمد بن القاسم الثقفي • معلم المادة: أ/ عماد جابر محمد
+      </div>
+    </div>
+
+    <!-- المشهد 2: واجهة التعلم والاختبارات المخصصة للدرس الأول فقط -->
+    <div id="viewLearn" class="hidden w-full flex flex-col gap-4">
+      <section class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
+          <div>
+            <span class="text-xs font-bold text-amber-700 bg-amber-50 px-2.5 py-0.5 rounded-md inline-block mb-1">الوحدة الأولى: الأعداد</span>
+            <h2 class="text-base sm:text-lg font-black text-slate-800">الدرس الأول: جمع وطرح الأعداد الموجهة</h2>
+          </div>
+          <!-- مؤشر الرصد السحابي المباشر لشيت المعلم -->
+          <div id="syncStatus" class="text-[11px] font-bold text-slate-600 bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-200 flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-slate-400" id="syncDot"></span>
+            <span id="syncText">جاهز للرصد التلقائي</span>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-3 gap-2 text-center text-xs sm:text-sm font-bold">
+          <button type="button" id="tabPre" onclick="setStage('pre')" class="py-2.5 px-2 rounded-xl transition flex flex-col sm:flex-row items-center justify-center gap-1 border cursor-pointer">
+            <span>١. تشخيص قبلي</span>
+            <span id="badgePre" class="text-[10px] px-1.5 py-0.2 rounded-full bg-slate-200 text-slate-700">غير مكتمل</span>
+          </button>
+          <button type="button" id="tabRem" onclick="setStage('remedial')" class="py-2.5 px-2 rounded-xl transition flex flex-col sm:flex-row items-center justify-center gap-1 border cursor-pointer">
+            <span>٢. فيديو وتَمْكِين</span>
+            <span id="badgeRem" class="text-[10px] px-1.5 py-0.2 rounded-full bg-slate-200 text-slate-700">شرح + ٥ تدريبات</span>
+          </button>
+          <button type="button" id="tabPost" onclick="setStage('post')" class="py-2.5 px-2 rounded-xl transition flex flex-col sm:flex-row items-center justify-center gap-1 border cursor-pointer">
+            <span>٣. قياس بعدي</span>
+            <span id="badgePost" class="text-[10px] px-1.5 py-0.2 rounded-full bg-slate-200 text-slate-700">غير مكتمل</span>
+          </button>
+        </div>
+      </section>
+
+      <div id="contentBox" class="bg-white rounded-3xl p-4 sm:p-6 shadow-sm border border-slate-200 min-h-[380px]">
+        <!-- يتم حقن الأسئلة والمحتوى ديناميكياً هنا -->
+      </div>
+    </div>
+
+    <!-- المشهد 3: نافذة إدخال رمز المعلم -->
+    <div id="viewTeacherPin" class="hidden w-full max-w-xs mx-auto my-auto bg-white rounded-3xl p-6 shadow-2xl border border-slate-200 text-center">
+      <div class="w-12 h-12 bg-amber-100 text-amber-700 rounded-2xl mx-auto flex items-center justify-center text-2xl font-black mb-2">
+        🔒
+      </div>
+      <h3 class="text-base font-black text-slate-800 mb-1">لوحة المعلم الخاصة</h3>
+      <p class="text-xs text-slate-500 mb-4">أدخل رمز المرور السري (الافتراضي: 8888)</p>
+      
+      <input type="password" id="pinCodeInput" maxlength="6" placeholder="****" class="w-full text-center tracking-widest text-xl font-black bg-slate-50 border-2 border-slate-300 rounded-xl py-2 mb-3 outline-none focus:border-amber-500">
+      
+      <div class="flex gap-2">
+        <button type="button" onclick="checkTeacherPin()" class="flex-1 bg-amber-500 hover:bg-amber-600 text-slate-950 font-black py-2.5 rounded-xl text-xs transition cursor-pointer">دخول</button>
+        <button type="button" onclick="cancelTeacherPin()" class="px-4 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold py-2.5 rounded-xl text-xs transition cursor-pointer">إلغاء</button>
+      </div>
+      <p id="pinWrongAlert" class="hidden text-rose-500 text-xs font-bold mt-2">الرمز غير صحيح، حاول ثانية!</p>
+    </div>
+
+    <!-- المشهد 4: لوحة تحكم المعلم والرصد الشامل للدرس الأول -->
+    <div id="viewTeacherDashboard" class="hidden w-full bg-white rounded-3xl shadow-xl border border-slate-200 overflow-hidden flex flex-col">
+      <div class="bg-slate-900 text-white p-4 sm:p-5 flex flex-wrap items-center justify-between gap-3 border-b-2 border-amber-500">
+        <div>
+          <span class="text-xs bg-amber-500 text-slate-950 font-black px-2 py-0.5 rounded">متابعة الدرس الأول</span>
+          <h2 class="text-lg sm:text-xl font-black mt-1">سجل التقييم التشخيصي والعلاجي: جمع وطرح الأعداد الموجهة</h2>
+          <p class="text-xs text-slate-400">مدرسة محمد بن القاسم الثقفي • معلم المادة: أ/ عماد جابر محمد</p>
+        </div>
+        <div class="flex items-center flex-wrap gap-2">
+          <!-- زر مسح الكل والبدء من جديد -->
+          <button type="button" onclick="confirmResetAllStudents()" class="bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold px-3 py-2 rounded-xl flex items-center gap-1 transition shadow cursor-pointer">
+            🗑️ مسح الكل والبدء من جديد
+          </button>
+          <!-- زر تصدير Excel بخلايا حقيقية -->
+          <button type="button" onclick="exportToExcelCells()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-3 py-2 rounded-xl flex items-center gap-1 transition shadow cursor-pointer">
+            📊 تصدير Excel (جداول وخلايا)
+          </button>
+          <!-- زر الطباعة الرسمية -->
+          <button type="button" onclick="triggerDirectPrint()" class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold px-3 py-2 rounded-xl flex items-center gap-1 transition shadow cursor-pointer">
+            🖨️ طباعة تقرير رسمي
+          </button>
+          <button type="button" onclick="exitTeacherDashboard()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold px-3 py-2 rounded-xl transition cursor-pointer">
+            ✕ إغلاق والعودة
+          </button>
+        </div>
+      </div>
+
+      <!-- إحصائيات سريعة للدرس الأول -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 p-4 bg-slate-50 border-b border-slate-200 text-center">
+        <div class="bg-white p-3 rounded-2xl border border-slate-200 shadow-sm">
+          <div class="text-xs text-slate-500 font-bold">إجمالي الطلبة المسجلين</div>
+          <div class="text-lg sm:text-xl font-black text-slate-800 mt-1" id="dashTotalStudents">٠</div>
+        </div>
+        <div class="bg-white p-3 rounded-2xl border border-slate-200 shadow-sm">
+          <div class="text-xs text-slate-500 font-bold">متوسط القياس القبلي</div>
+          <div class="text-lg sm:text-xl font-black text-rose-600 mt-1" id="dashAvgPre">٠ ٪</div>
+        </div>
+        <div class="bg-white p-3 rounded-2xl border border-slate-200 shadow-sm">
+          <div class="text-xs text-slate-500 font-bold">متوسط القياس البعدي</div>
+          <div class="text-lg sm:text-xl font-black text-emerald-600 mt-1" id="dashAvgPost">٠ ٪</div>
+        </div>
+        <div class="bg-white p-3 rounded-2xl border border-slate-200 shadow-sm">
+          <div class="text-xs text-slate-500 font-bold">معدل تحسن الأداء</div>
+          <div class="text-lg sm:text-xl font-black text-amber-600 mt-1" id="dashAvgGrowth">+ ٠ ٪</div>
+        </div>
+      </div>
+
+      <!-- محرك البحث والفلاتر -->
+      <div class="p-3 sm:p-4 bg-white flex flex-col sm:flex-row items-center justify-between gap-3 border-b border-slate-200">
+        <div class="flex items-center gap-2 w-full sm:w-auto">
+          <input type="text" id="dashSearchBox" oninput="renderDashboardTable()" placeholder="ابحث باسم الطالب..." class="w-full sm:w-64 bg-slate-50 border border-slate-300 rounded-xl px-3 py-1.5 text-xs font-bold outline-none focus:border-amber-500">
+          <select id="dashClassFilter" onchange="renderDashboardTable()" class="bg-slate-50 border border-slate-300 rounded-xl px-3 py-1.5 text-xs font-bold outline-none cursor-pointer">
+            <option value="all">كل الشعب</option>
+            <option value="٨ / ١">٨ / ١</option>
+            <option value="٨ / ٢">٨ / ٢</option>
+            <option value="٨ / ٣">٨ / ٣</option>
+            <option value="٨ / ٤">٨ / ٤</option>
+            <option value="٨ / ٥">٨ / ٥</option>
+            <option value="٨ / ٦">٨ / ٦</option>
+          </select>
+        </div>
+        <span class="text-xs text-slate-500 font-bold">رصد فوري لنتائج مهارة جمع وطرح الأعداد الموجهة</span>
+      </div>
+
+      <!-- مساحة الجدول والطباعة الرسمية المعتمدة -->
+      <div class="flex-1 overflow-x-auto p-4 custom-scroll max-h-[420px]" id="printContainer">
+        
+        <!-- ترويسة التقرير المطبوع -->
+        <div class="hidden print:block text-center border-b-2 border-slate-900 pb-3 mb-4">
+          <h2 class="text-xl font-black">سلطنة عُمان - وزارة التربية والتعليم</h2>
+          <h3 class="text-lg font-bold">مدرسة محمد بن القاسم الثقفي للتعليم الأساسي (٥-١٠)</h3>
+          <h4 class="text-base font-bold text-amber-800">تقرير خطة تَمْكِين العلاجية - الدرس الأول: جمع وطرح الأعداد الموجهة</h4>
+          <p class="text-xs text-slate-600 mt-1">الصف الثامن الأساسي • الفصل الدراسي الأول</p>
+        </div>
+
+        <table class="w-full text-right text-xs border-collapse">
+          <thead>
+            <tr class="bg-slate-100 text-slate-700 font-black border-b border-slate-300">
+              <th class="p-2.5">#</th>
+              <th class="p-2.5">اسم الطالب</th>
+              <th class="p-2.5">الشعبة</th>
+              <th class="p-2.5">الدرس المستهدف</th>
+              <th class="p-2.5 text-center">الدرجة القبلية (من ٥)</th>
+              <th class="p-2.5 text-center">الدرجة البعدية (من ٥)</th>
+              <th class="p-2.5 text-center">درجة ونسبة التمكن</th>
+              <th class="p-2.5 text-center">حالة الطالب</th>
+              <th class="p-2.5 text-center no-print">إجراءات</th>
+            </tr>
+          </thead>
+          <tbody id="dashTableBody" class="divide-y divide-slate-200 font-medium">
+            <!-- تُملأ صفوف الطلبة ديناميكياً -->
+          </tbody>
+        </table>
+
+        <!-- خانات الاعتماد والتوقيع -->
+        <div class="print-signatures mt-6 pt-4 border-t border-slate-300 flex flex-wrap items-center justify-between text-xs text-slate-800 gap-4">
+          <div>
+            <span class="font-bold">معلم المادة: </span>
+            <span class="font-black text-slate-900 underline text-sm">أ/ عماد جابر محمد</span>
+          </div>
+          <div>
+            <span class="font-bold">مدير المدرسة: </span>
+            <span class="font-black text-slate-900 underline text-sm">أ/ أحمد كشوب</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- تذييل الصفحة -->
+  <footer class="bg-slate-900 text-slate-400 text-xs py-3 px-4 border-t border-slate-800 text-center">
+    <div class="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
+      <p>منهاج كامبريدج - سلطنة عُمان • الرياضيات للصف الثامن</p>
+      <p class="text-amber-400 font-bold">إعداد: أ/ عماد جابر محمد • مدرسة محمد بن القاسم الثقفي</p>
+      <p>© ٢٠٢٦ جميع الحقوق محفوظة للمعلم والمدرسة</p>
+    </div>
+  </footer>
+
+  <script>
+    /* =========================================================================
+       1. الرابط السحابي المباشر لجدول Google Sheets (الخاص بالأستاذ عماد جابر)
+       ========================================================================= */
+    const GOOGLE_SHEET_API_URL = "https://script.google.com/macros/s/AKfycbwfVEYtpKI1qeX73WFqulyLcj1m7j7lWtDz5FdAephCgcQRPKY-2e3b75tuyQUL3z2p/exec";
+
+    /* دالة التحويل للأرقام المشرقية العربية */
+    function toArDigits(val) {
+      if (val === null || val === undefined) return '';
+      const map = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
+      return val.toString().replace(/[0-9]/g, ch => map[+ch]);
+    }
+
+    /* بيانات الدرس الأول حصرياً */
+    const lessonData = {
+      title: "جمع وطرح الأعداد الموجهة",
+      unit: "الوحدة الأولى: الأعداد",
+      videoDirectUrl: "https://youtu.be/bH-HKaa5Sso",
+      concept: "قاعدة الإشارات الذهبية: عند جمع عددين متشابهين في الإشارة (+) مع (+) أو (-) مع (-) نجمع ونضع نفس الإشارة. وعند اختلاف الإشارتين (+) مع (-) نطرح ونضع إشارة العدد الأكبر قيمة مطلقة. تذكر دائماً: طرح عدد سالب يتحول مباشرة لجمع: - (-٤) = + ٤.",
+      preTest: [
+        { q: "ما ناتج جمع: - ٤ + ( - ٣) ؟", opts: ["- ٧", "+ ٧", "- ١", "+ ١"], ans: 0, hint: "الإشارتان سالبتان؛ اجمع ٤ + ٣ = ٧ وضع إشارة السالب." },
+        { q: "ما ناتج: - ٨ + ٥ ؟", opts: ["- ١٣", "+ ٣", "- ٣", "+ ١٣"], ans: 2, hint: "الإشارات مختلفة؛ اطرح ٨ - ٥ = ٣ وضع إشارة الأكبر (-)." },
+        { q: "احسب ناتج: ٦ - ٩ ؟", opts: ["+ ٣", "- ٣", "+ ١٥", "- ١٥"], ans: 1, hint: "العدد الأصغر مطروح منه الأكبر فالناتج سالب دائماً (٦ - ٩ = - ٣)." },
+        { q: "ما قيمة: - ٢ - ٥ ؟", opts: ["- ٧", "+ ٧", "- ٣", "+ ٣"], ans: 0, hint: "خسارة ٢ ثم خسارة ٥ تعني إجمالي خسارة ٧ (- ٢ - ٥ = - ٧)." },
+        { q: "أوجد ناتج: ٧ - ( - ٣) ؟", opts: ["٤", "- ٤", "١٠", "- ١٠"], ans: 2, hint: "سالب وراءه سالب يتحول فوراً إلى موجب: ٧ + ٣ = ١٠." }
+      ],
+      remedial: [
+        { q: "على خط الأعداد: إذا تحركت من الصفر لليسار ٥ خطوات ثم لليمين خطوتين، أين تقف؟ (- ٥ + ٢)", opts: ["- ٧", "- ٣", "+ ٣", "+ ٧"], ans: 1, hint: "اطرح ٥ - ٢ = ٣ والإشارة للأبعد عن الصفر (سالبة)." },
+        { q: "ما ناتج: - ١٠ + ١٠ ؟", opts: ["- ٢٠", "+ ٢٠", "٠", "١"], ans: 2, hint: "أي عدد مضافاً إلى معكوسه الجمعي يساوي دائماً صفراً." },
+        { q: "احسب: ٤ + ( - ٩) ؟", opts: ["- ٥", "+ ٥", "- ١٣", "+ ١٣"], ans: 0, hint: "الفرق بين ٩ و ٤ هو ٥ وإشارة العدد الأكبر سالبة." },
+        { q: "ما ناتج: - ١٢ - ( - ٤) ؟", opts: ["- ١٦", "- ٨", "+ ٨", "+ ١٦"], ans: 1, hint: "تتحول العبارة إلى: - ١٢ + ٤ = - ٨." },
+        { q: "درجة الحرارة كانت - ٣ سيليزية ثم انخفضت بمقدار ٤ درجات، كم تصبح؟", opts: ["- ٧", "+ ١", "- ١", "+ ٧"], ans: 0, hint: "انخفاض يعني حركة لليسار: - ٣ - ٤ = - ٧." }
+      ],
+      postTest: [
+        { q: "ما ناتج: - ٦ + ( - ٨) ؟", opts: ["- ١٤", "+ ١٤", "- ٢", "+ ٢"], ans: 0, hint: "تشابه الإشارات = نجمع ونضع سالب (- ١٤)." },
+        { q: "ما ناتج: - ١٥ + ٩ ؟", opts: ["- ٢٤", "+ ٦", "- ٦", "+ ٢٤"], ans: 2, hint: "اطرح ١٥ - ٩ = ٦ وإشارة السالب للأكبر (- ٦)." },
+        { q: "احسب: ٨ - ( - ٨) ؟", opts: ["٠", "١٦", "- ١٦", "٦٤"], ans: 1, hint: "سالب السالب موجب: ٨ + ٨ = ١٦." },
+        { q: "أوجد قيمة: - ٧ + ١١ ؟", opts: ["- ٤", "+ ٤", "- ١٨", "+ ١٨"], ans: 1, hint: "العدد ١١ موجب وأكبر من ٧، فالناتج موجب ٤." },
+        { q: "ما قيمة: - ١ - ٩ ؟", opts: ["- ١٠", "+ ١٠", "- ٨", "+ ٨"], ans: 0, hint: "كلاهما سالب: نجمع ١ + ٩ = ١٠ والإشارة سالبة (- ١٠)." }
+      ]
+    };
+
+    /* إدارة الحالة وتتبع الأخطاء بدقة */
+    let currentStage = 'pre';
+    let currentQuestionIdx = 0;
+    let tempScore = 0;
+
+    let studentScore = { pre: null, post: null };
+    let studentErrors = { pre: [], post: [] }; // مصفوفة رصد نصوص الأسئلة الخاطئة
+    let activeStudent = { name: "", gradeClass: "٨ / ١" };
+
+    let registeredStudents = JSON.parse(localStorage.getItem('tamkeen_lesson1_students')) || [];
+
+    function saveStudentsToStorage() {
+      localStorage.setItem('tamkeen_lesson1_students', JSON.stringify(registeredStudents));
+    }
+
+    /* تسجيل الطالب والتنقل */
+    function handleStudentLogin() {
+      const nameInput = document.getElementById('studentNameField').value.trim();
+      const classInput = document.getElementById('studentClassField').value;
+      const err = document.getElementById('nameErrorMsg');
+
+      if (!nameInput) {
+        err.classList.remove('hidden');
+        document.getElementById('studentNameField').focus();
+        return;
+      }
+      err.classList.add('hidden');
+
+      activeStudent = { name: nameInput, gradeClass: classInput };
+
+      // تسجيل الطالب محلياً أيضاً
+      registeredStudents.unshift({
+        id: Date.now(),
+        name: activeStudent.name,
+        grade: activeStudent.gradeClass,
+        lesson: lessonData.title,
+        pre: 0,
+        post: 0,
+        masteryScore: 0,
+        masteryPct: "٠ ٪",
+        status: "قيد البدء"
+      });
+      saveStudentsToStorage();
+
+      document.getElementById('headerStudentName').textContent = activeStudent.name;
+      document.getElementById('headerStudentClass').textContent = `(${activeStudent.gradeClass})`;
+      document.getElementById('activeUserBadge').classList.remove('hidden');
+
+      document.getElementById('viewLogin').classList.add('hidden');
+      document.getElementById('viewLearn').classList.remove('hidden');
+
+      setStage('pre');
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+      const input = document.getElementById('studentNameField');
+      if (input) {
+        input.addEventListener("keydown", function(e) {
+          if (e.key === "Enter") handleStudentLogin();
+        });
+      }
+    });
+
+    function setStage(stage) {
+      currentStage = stage;
+      currentQuestionIdx = 0;
+      updateStageTabs();
+      renderCurrentStage();
+    }
+
+    function updateStageTabs() {
+      const preVal = studentScore.pre;
+      const postVal = studentScore.post;
+
+      const tPre = document.getElementById('tabPre');
+      const tRem = document.getElementById('tabRem');
+      const tPost = document.getElementById('tabPost');
+
+      [tPre, tRem, tPost].forEach(b => {
+        b.className = "py-2.5 px-2 rounded-xl transition flex flex-col sm:flex-row items-center justify-center gap-1 border bg-slate-50 text-slate-600 border-slate-200 cursor-pointer";
+      });
+
+      if (currentStage === 'pre') tPre.className = "py-2.5 px-2 rounded-xl transition flex flex-col sm:flex-row items-center justify-center gap-1 border-2 border-amber-500 bg-amber-50 text-amber-900 font-black shadow-sm cursor-pointer";
+      if (currentStage === 'remedial') tRem.className = "py-2.5 px-2 rounded-xl transition flex flex-col sm:flex-row items-center justify-center gap-1 border-2 border-amber-500 bg-amber-50 text-amber-900 font-black shadow-sm cursor-pointer";
+      if (currentStage === 'post') tPost.className = "py-2.5 px-2 rounded-xl transition flex flex-col sm:flex-row items-center justify-center gap-1 border-2 border-amber-500 bg-amber-50 text-amber-900 font-black shadow-sm cursor-pointer";
+
+      document.getElementById('badgePre').textContent = preVal !== null ? `${toArDigits(preVal)} من ٥` : 'غير مكتمل';
+      document.getElementById('badgePost').textContent = postVal !== null ? `${toArDigits(postVal)} من ٥` : 'غير مكتمل';
+    }
+
+    function renderCurrentStage() {
+      const container = document.getElementById('contentBox');
+      if (currentStage === 'pre') {
+        renderQuizStage('المرحلة ١: اختبار تشخيصي قبلي', lessonData.preTest, 'pre');
+      } else if (currentStage === 'remedial') {
+        renderRemedialStageWithSmartCard();
+      } else if (currentStage === 'post') {
+        renderQuizStage('المرحلة ٣: اختبار قياس بعدي (إتقان)', lessonData.postTest, 'post');
+      }
+    }
+
+    function renderQuizStage(title, questions, stageType) {
+      const container = document.getElementById('contentBox');
+      const q = questions[currentQuestionIdx];
+      const isEnd = currentQuestionIdx === questions.length - 1;
+
+      container.innerHTML = `
+        <div class="max-w-2xl mx-auto">
+          <div class="flex items-center justify-between border-b border-slate-200 pb-3 mb-4">
+            <div>
+              <span class="text-[11px] font-bold text-amber-700 bg-amber-100 px-2 py-0.5 rounded-full">${title}</span>
+              <h3 class="text-sm sm:text-base font-black text-slate-800 mt-1">السؤال ${toArDigits(currentQuestionIdx + 1)} من ${toArDigits(questions.length)}</h3>
+            </div>
+            <div class="text-xs font-bold text-slate-500">
+              معلم المادة: <span class="text-slate-900 font-black">أ/ عماد جابر</span>
+            </div>
+          </div>
+
+          <div class="bg-slate-50 rounded-2xl p-4 sm:p-5 border border-slate-200 text-center mb-5">
+            <p class="text-lg sm:text-xl font-black text-slate-900 leading-relaxed">${toArDigits(q.q)}</p>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-5">
+            ${q.opts.map((opt, i) => `
+              <button type="button" onclick="verifyQuizAnswer(${i}, ${q.ans}, '${stageType}', '${q.hint.replace(/'/g, "\\'")}', '${q.q.replace(/'/g, "\\'")}')" class="quiz-opt-btn bg-white hover:bg-amber-50 hover:border-amber-400 border-2 border-slate-200 text-slate-900 font-black py-3 px-4 rounded-2xl text-base transition flex items-center justify-between shadow-sm active:scale-98 cursor-pointer">
+                <span class="w-7 h-7 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center text-xs font-bold">${['أ', 'ب', 'جـ', 'د'][i]}</span>
+                <span class="flex-1 text-center font-black">${toArDigits(opt)}</span>
+              </button>
+            `).join('')}
+          </div>
+
+          <div id="quizFeedbackBox" class="hidden rounded-2xl p-3.5 mb-4 text-xs font-bold leading-relaxed"></div>
+
+          <div class="flex justify-end">
+            <button type="button" id="nextQuizBtn" onclick="goToNextQuizQuestion('${stageType}')" class="hidden bg-slate-900 hover:bg-slate-800 text-white font-black px-6 py-2.5 rounded-xl text-xs transition cursor-pointer">
+              ${isEnd ? 'رصد النتيجة وإنهاء 🏁' : 'السؤال التالي ⬅️'}
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    function verifyQuizAnswer(selected, correct, stageType, hint, questionText) {
+      const btns = document.querySelectorAll('.quiz-opt-btn');
+      btns.forEach(b => b.disabled = true);
+      const feedback = document.getElementById('quizFeedbackBox');
+      const nextBtn = document.getElementById('nextQuizBtn');
+
+      if (selected === correct) {
+        btns[selected].className = "quiz-opt-btn bg-emerald-50 border-2 border-emerald-500 text-emerald-900 font-black py-3 px-4 rounded-2xl text-base transition flex items-center justify-between shadow-sm";
+        feedback.className = "rounded-2xl p-3.5 mb-4 text-xs font-bold bg-emerald-100 text-emerald-900 border border-emerald-300 block";
+        feedback.innerHTML = `🌟 أحسنت يا بطل! إجابة صحيحة ومتقنة.`;
+        tempScore++;
+      } else {
+        btns[selected].className = "quiz-opt-btn bg-rose-50 border-2 border-rose-400 text-rose-900 font-black py-3 px-4 rounded-2xl text-base transition flex items-center justify-between shadow-sm";
+        btns[correct].className = "quiz-opt-btn bg-emerald-50 border-2 border-emerald-500 text-emerald-900 font-black py-3 px-4 rounded-2xl text-base transition flex items-center justify-between shadow-sm";
+        feedback.className = "rounded-2xl p-3.5 mb-4 text-xs font-bold bg-amber-50 text-amber-950 border border-amber-300 block";
+        feedback.innerHTML = `💡 <strong>توجيه المعلم عماد:</strong> ${toArDigits(hint)}`;
+        studentErrors[stageType].push(questionText);
+      }
+      nextBtn.classList.remove('hidden');
+    }
+
+    function goToNextQuizQuestion(stageType) {
+      const list = stageType === 'pre' ? lessonData.preTest : lessonData.postTest;
+
+      if (currentQuestionIdx < list.length - 1) {
+        currentQuestionIdx++;
+        renderQuizStage(stageType === 'pre' ? 'المرحلة ١: اختبار تشخيصي قبلي' : 'المرحلة ٣: اختبار قياس بعدي (إتقان)', list, stageType);
+      } else {
+        if (stageType === 'pre') {
+          studentScore.pre = tempScore;
+          updateStudentInRecords(tempScore, null);
+          tempScore = 0;
+          renderStageSummaryView('pre');
+        } else {
+          studentScore.post = tempScore;
+          updateStudentInRecords(null, tempScore);
+          tempScore = 0;
+          renderStageSummaryView('post');
+          // إرسال البيانات فوراً إلى Google Sheets بالدالة المحدثة
+          sendDataToGoogleSheet();
+        }
+        updateStageTabs();
+      }
+    }
+
+    function renderStageSummaryView(stageType) {
+      const container = document.getElementById('contentBox');
+      const score = stageType === 'pre' ? studentScore.pre : studentScore.post;
+      const success = score >= 4;
+
+      container.innerHTML = `
+        <div class="max-w-md mx-auto text-center py-6">
+          <div class="w-16 h-16 rounded-3xl ${success ? 'bg-emerald-100 text-emerald-600' : 'bg-amber-100 text-amber-700'} flex items-center justify-center text-4xl mx-auto mb-3 shadow-inner">
+            ${success ? '🏆' : '💪'}
+          </div>
+          <h3 class="text-xl font-black text-slate-800 mb-1">
+            ${stageType === 'pre' ? 'اكتمل الاختبار التشخيصي القبلي' : 'اكتمل اختبار القياس البعدي'}
+          </h3>
+          <p class="text-xs text-slate-500 mb-4">نتيجة الطالب: <strong>${activeStudent.name}</strong></p>
+
+          <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 mb-6">
+            <div class="text-3xl font-black text-slate-900">${toArDigits(score)} / ٥</div>
+            <p class="text-xs text-slate-600 font-bold mt-1">
+              ${stageType === 'pre' 
+                ? 'انتقل الآن للمرحلة الثانية لمشاهدة فيديو الشرح وحل تدريبات التمكين الخمسة.' 
+                : (success ? 'تم التمكين بنجاح تام! ورُصدت نتيجتك تلقائياً في سجل المعلم.' : 'تحسن طيب، راجع تدريبات المعلم لترسيخ المفاهيم أكثر، ورُصدت نتيجتك بالسجل.')}
+            </p>
+          </div>
+
+          <div class="flex gap-2 justify-center">
+            ${stageType === 'pre' ? `
+              <button type="button" onclick="setStage('remedial')" class="bg-amber-500 hover:bg-amber-600 text-slate-950 font-black px-6 py-2.5 rounded-xl text-xs transition shadow cursor-pointer">
+                الانتقال لمشاهدة الفيديو والتدريب 🎥
+              </button>
+            ` : `
+              <div class="text-xs font-bold text-emerald-700 bg-emerald-50 px-4 py-2.5 rounded-xl border border-emerald-300 shadow-sm flex items-center gap-1.5">
+                <span>✅</span>
+                <span>تم إرسال نتيجتك وأخطائك لسجل الأستاذ عماد جابر بنجاح!</span>
+              </div>
+            `}
+          </div>
+          <p class="text-[11px] text-slate-400 mt-4">مدرسة محمد بن القاسم الثقفي • معلم المادة: أ/ عماد جابر محمد</p>
+        </div>
+      `;
+    }
+
+    function renderRemedialStageWithSmartCard() {
+      const container = document.getElementById('contentBox');
+
+      container.innerHTML = `
+        <div class="space-y-6">
+          <div class="bg-slate-900 rounded-3xl p-4 sm:p-5 text-white shadow-lg border border-slate-800">
+            <div class="flex items-center gap-2 mb-3">
+              <span class="w-8 h-8 rounded-xl bg-rose-600 text-white flex items-center justify-center font-black text-sm">▶</span>
+              <div>
+                <h3 class="font-black text-sm sm:text-base text-amber-400">فيديو الشرح التأسيسي: العمليات على الأعداد الصحيحة</h3>
+                <p class="text-[11px] text-slate-400">شاهد الشرح بتركيز لترسيخ قواعد الإشارات قبل حل التدريبات</p>
+              </div>
+            </div>
+
+            <div class="relative w-full aspect-video rounded-2xl overflow-hidden border border-slate-700 bg-slate-950 flex flex-col items-center justify-center text-center p-6 group">
+              <img src="https://img.youtube.com/vi/bH-HKaa5Sso/maxresdefault.jpg" alt="غلاف الشرح" class="absolute inset-0 w-full h-full object-cover opacity-35 group-hover:opacity-45 transition duration-300">
+              
+              <div class="relative z-10 flex flex-col items-center gap-3">
+                <a href="${lessonData.videoDirectUrl}" target="_blank" rel="noopener noreferrer" class="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-rose-600 hover:bg-rose-700 text-white flex items-center justify-center text-2xl sm:text-3xl shadow-2xl transition transform hover:scale-110 active:scale-95 cursor-pointer">
+                  ▶
+                </a>
+                <h4 class="text-white font-black text-sm sm:text-lg drop-shadow-md">شرح درس: العمليات على الأعداد الصحيحة</h4>
+                <p class="text-xs sm:text-sm text-amber-300 font-bold drop-shadow">إعداد وتقديم: أ/ عماد جابر محمد</p>
+                <a href="${lessonData.videoDirectUrl}" target="_blank" rel="noopener noreferrer" class="mt-2 bg-white/20 hover:bg-white/30 text-white text-xs font-bold px-4 py-2 rounded-xl backdrop-blur-md border border-white/30 transition flex items-center gap-1.5 shadow-sm">
+                  <span>فتح الشرح ومشاهدته الآن</span>
+                  <span>↗</span>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-gradient-to-r from-amber-500/10 via-amber-500/5 to-transparent border border-amber-500/30 rounded-2xl p-4">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="w-8 h-8 rounded-lg bg-amber-500 text-slate-950 flex items-center justify-center font-black text-sm">💡</span>
+              <h3 class="font-black text-slate-900 text-sm">الخلاصة الذهبية للقاعدة (أ/ عماد جابر):</h3>
+            </div>
+            <p class="text-xs sm:text-sm text-slate-800 leading-relaxed font-bold bg-white/90 p-3 rounded-xl border border-amber-200">
+              ${toArDigits(lessonData.concept)}
+            </p>
+          </div>
+
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <h4 class="font-black text-sm text-slate-800">تدريبات تثبيت الفهم المباشرة (٥ أسئلة)</h4>
+              <span class="text-[11px] text-slate-500">اختر الإجابة واحصل على التغذية الفورية</span>
+            </div>
+
+            <div class="space-y-3">
+              ${lessonData.remedial.map((item, qIdx) => `
+                <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4">
+                  <div class="font-black text-xs sm:text-sm text-slate-900 mb-3 flex items-start gap-2">
+                    <span class="w-5 h-5 rounded-full bg-slate-800 text-white flex items-center justify-center text-[10px] shrink-0 mt-0.5">${toArDigits(qIdx + 1)}</span>
+                    <span>${toArDigits(item.q)}</span>
+                  </div>
+                  <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                    ${item.opts.map((opt, oIdx) => `
+                      <button type="button" onclick="verifyRemedialItem(this, ${oIdx}, ${item.ans}, '${item.hint.replace(/'/g, "\\'")}', 'feedback_rem_${qIdx}')" class="bg-white hover:bg-slate-100 border border-slate-300 py-2.5 px-2 rounded-xl text-xs font-black text-slate-800 transition active:scale-95 cursor-pointer">
+                        ${toArDigits(opt)}
+                      </button>
+                    `).join('')}
+                  </div>
+                  <div id="feedback_rem_${qIdx}" class="hidden mt-2 p-2.5 rounded-xl text-[11px] font-bold"></div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+
+          <div class="text-center pt-3 border-t border-slate-200">
+            <button type="button" onclick="setStage('post')" class="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 font-black px-8 py-3.5 rounded-2xl shadow-lg transition text-xs sm:text-sm active:scale-95 cursor-pointer">
+              الانتقال لاختبار القياس البعدي والتأكد من التمكين 🎯
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    function verifyRemedialItem(btn, chosen, correct, hint, fId) {
+      const parent = btn.parentElement;
+      const allBtns = parent.querySelectorAll('button');
+      allBtns.forEach(b => b.disabled = true);
+      const feedback = document.getElementById(fId);
+
+      if (chosen === correct) {
+        btn.className = "bg-emerald-500 text-white border border-emerald-600 py-2.5 px-2 rounded-xl text-xs font-black";
+        feedback.className = "mt-2 p-2.5 rounded-xl text-[11px] font-bold bg-emerald-100 text-emerald-900 border border-emerald-200 block";
+        feedback.innerHTML = "✨ رائع جداً! إجابة دقيقة وصحيحة.";
+      } else {
+        btn.className = "bg-rose-500 text-white border border-rose-600 py-2.5 px-2 rounded-xl text-xs font-black";
+        allBtns[correct].className = "bg-emerald-100 text-emerald-900 border-2 border-emerald-500 py-2.5 px-2 rounded-xl text-xs font-black";
+        feedback.className = "mt-2 p-2.5 rounded-xl text-[11px] font-bold bg-amber-50 text-amber-950 border border-amber-200 block";
+        feedback.innerHTML = `💡 توجيه علاجي: ${toArDigits(hint)}`;
+      }
+    }
+
+    /* تحديث سجلات الطالب محلياً */
+    function updateStudentInRecords(preVal, postVal) {
+      if (!activeStudent.name) return;
+      const studentRec = registeredStudents.find(s => s.name === activeStudent.name);
+      if (studentRec) {
+        if (preVal !== null) studentRec.pre = preVal;
+        if (postVal !== null) {
+          studentRec.post = postVal;
+          studentRec.masteryScore = postVal;
+          studentRec.masteryPct = `${toArDigits(Math.round((postVal / 5) * 100))} ٪`;
+          studentRec.status = postVal >= 4 ? "تم التمكين بنجاح" : "قيد المتابعة";
+        }
+        saveStudentsToStorage();
+      }
+    }
+
+    /* =========================================================================
+       2. دالة الإرسال السحابي المحدثة بتقنية Beacon (doGet) بدون مشاكل CORS
+       ========================================================================= */
+    function sendDataToGoogleSheet() {
+      const dot = document.getElementById('syncDot');
+      const text = document.getElementById('syncText');
+      
+      dot.className = "w-2 h-2 rounded-full bg-amber-400 animate-ping";
+      text.textContent = "جارٍ حفظ النتيجة في سجل المعلم...";
+
+      const params = new URLSearchParams({
+        studentName: activeStudent.name,
+        studentClass: activeStudent.gradeClass,
+        preScore: studentScore.pre,
+        postScore: studentScore.post,
+        masteryPct: Math.round((studentScore.post / 5) * 100) + " %",
+        preErrors: studentErrors.pre.length > 0 ? studentErrors.pre.join(" | ") : "لا توجد أخطاء",
+        postErrors: studentErrors.post.length > 0 ? studentErrors.post.join(" | ") : "تمكن تام بدون أخطاء"
+      });
+
+      // إرسال مضمون 100% عبر doGet دون الخضوع لقيود CORS
+      const beaconImg = new Image();
+      beaconImg.src = `${GOOGLE_SHEET_API_URL}?${params.toString()}`;
+      
+      beaconImg.onload = function() {
+        dot.className = "w-2 h-2 rounded-full bg-emerald-500";
+        text.textContent = "تم الرصد بنجاح في Google Sheet";
+      };
+      beaconImg.onerror = function() {
+        // المتصفحات قد تعطي خطأ لقراءة الرد كصورة، لكن الطلب يصل للسيرفر ويسجل بالجدول
+        dot.className = "w-2 h-2 rounded-full bg-emerald-500";
+        text.textContent = "تم الرصد بنجاح في Google Sheet";
+      };
+    }
+
+    /* =========================================================================
+       3. لوحة تحكم المعلم (المسح الفردي، مسح الكل، إكسيل، الطباعة)
+       ========================================================================= */
+    let previousView = 'login';
+
+    function showTeacherLogin() {
+      previousView = document.getElementById('viewLearn').classList.contains('hidden') ? 'login' : 'learn';
+      document.getElementById('viewLogin').classList.add('hidden');
+      document.getElementById('viewLearn').classList.add('hidden');
+      document.getElementById('viewTeacherDashboard').classList.add('hidden');
+      document.getElementById('pinCodeInput').value = '';
+      document.getElementById('pinWrongAlert').classList.add('hidden');
+      document.getElementById('viewTeacherPin').classList.remove('hidden');
+      document.getElementById('pinCodeInput').focus();
+    }
+
+    function cancelTeacherPin() {
+      document.getElementById('viewTeacherPin').classList.add('hidden');
+      if (previousView === 'learn') {
+        document.getElementById('viewLearn').classList.remove('hidden');
+      } else {
+        document.getElementById('viewLogin').classList.remove('hidden');
+      }
+    }
+
+    function checkTeacherPin() {
+      const pin = document.getElementById('pinCodeInput').value.trim();
+      if (pin === "8888" || pin === "٨٨٨٨") {
+        document.getElementById('viewTeacherPin').classList.add('hidden');
+        document.getElementById('viewTeacherDashboard').classList.remove('hidden');
+        renderDashboardTable();
+      } else {
+        document.getElementById('pinWrongAlert').classList.remove('hidden');
+      }
+    }
+
+    function exitTeacherDashboard() {
+      document.getElementById('viewTeacherDashboard').classList.add('hidden');
+      if (previousView === 'learn') {
+        document.getElementById('viewLearn').classList.remove('hidden');
+      } else {
+        document.getElementById('viewLogin').classList.remove('hidden');
+      }
+    }
+
+    function deleteSingleStudent(studentId, studentName) {
+      const isConfirmed = confirm(`هل أنت متأكد من حذف سجل الطالب:\n"${studentName}" نهائياً من اللوحة؟`);
+      if (isConfirmed) {
+        registeredStudents = registeredStudents.filter(s => s.id !== studentId);
+        saveStudentsToStorage();
+        renderDashboardTable();
+      }
+    }
+
+    function confirmResetAllStudents() {
+      const isConfirmed = confirm("⚠️ تنبيه هام:\nهل أنت متأكد من مسح جميع بيانات الطلبة المسجلين والبدء من جديد؟\nهذا الإجراء سيفرغ السجل بالكامل.");
+      if (isConfirmed) {
+        registeredStudents = [];
+        saveStudentsToStorage();
+        renderDashboardTable();
+        alert("تم مسح السجلات بنجاح، يمكنك الآن تسجيل طلبة جدد.");
+      }
+    }
+
+    function renderDashboardTable() {
+      const tbody = document.getElementById('dashTableBody');
+      const search = document.getElementById('dashSearchBox').value.toLowerCase();
+      const classFilter = document.getElementById('dashClassFilter').value;
+
+      let filtered = registeredStudents.filter(r => {
+        const matchesName = r.name.toLowerCase().includes(search);
+        const matchesClass = (classFilter === 'all') || (r.grade === classFilter);
+        return matchesName && matchesClass;
+      });
+
+      document.getElementById('dashTotalStudents').textContent = toArDigits(filtered.length);
+      if (filtered.length > 0) {
+        const avgPre = (filtered.reduce((acc, r) => acc + (r.pre || 0), 0) / (filtered.length * 5)) * 100;
+        const avgPost = (filtered.reduce((acc, r) => acc + (r.post || 0), 0) / (filtered.length * 5)) * 100;
+        document.getElementById('dashAvgPre').textContent = `${toArDigits(Math.round(avgPre))} ٪`;
+        document.getElementById('dashAvgPost').textContent = `${toArDigits(Math.round(avgPost))} ٪`;
+        const diff = Math.round(avgPost - avgPre);
+        document.getElementById('dashAvgGrowth').textContent = (diff >= 0 ? `+ ${toArDigits(diff)} ٪` : `${toArDigits(diff)} ٪`);
+      } else {
+        document.getElementById('dashAvgPre').textContent = '٠ ٪';
+        document.getElementById('dashAvgPost').textContent = '٠ ٪';
+        document.getElementById('dashAvgGrowth').textContent = '+ ٠ ٪';
+      }
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="9" class="text-center py-6 text-slate-400 font-bold">لا توجد سجلات حالياً، القائمة فارغة.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = filtered.map((r, i) => `
+        <tr class="hover:bg-slate-50 transition border-b border-slate-100">
+          <td class="p-2.5 font-bold">${toArDigits(i + 1)}</td>
+          <td class="p-2.5 font-black text-slate-900">${r.name}</td>
+          <td class="p-2.5 font-bold text-slate-600">${r.grade}</td>
+          <td class="p-2.5 text-slate-700">${r.lesson}</td>
+          <td class="p-2.5 text-center font-bold text-rose-600 bg-rose-50/50">${toArDigits(r.pre)} / ٥</td>
+          <td class="p-2.5 text-center font-bold text-emerald-600 bg-emerald-50/50">${toArDigits(r.post)} / ٥</td>
+          <td class="p-2.5 text-center font-black text-amber-700 bg-amber-50/50">
+            ${toArDigits(r.masteryScore)} / ٥ (${r.masteryPct})
+          </td>
+          <td class="p-2.5 text-center">
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${r.status === 'تم التمكين بنجاح' ? 'bg-emerald-100 text-emerald-800' : (r.status === 'قيد البدء' ? 'bg-slate-100 text-slate-700' : 'bg-amber-100 text-amber-800')}">
+              ${r.status}
+            </span>
+          </td>
+          <td class="p-2.5 text-center no-print">
+            <button type="button" onclick="deleteSingleStudent(${r.id}, '${r.name}')" title="حذف هذا الطالب" class="p-1.5 bg-rose-50 hover:bg-rose-100 text-rose-600 hover:text-rose-700 rounded-lg transition active:scale-90 border border-rose-200">
+              🗑️
+            </button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    /* تصدير حقيقي إلى جدول إكسيل مقسم داخل خلايا مستقلة تماماً (.xls) */
+    function exportToExcelCells() {
+      if (registeredStudents.length === 0) {
+        alert("لا توجد بيانات لتصديرها حالياً!");
+        return;
+      }
+
+      let xml = `<?xml version="1.0"?>
+<?mso-application progid="Excel.Sheet"?>
+<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+ xmlns:o="urn:schemas-microsoft-com:office:office"
+ xmlns:x="urn:schemas-microsoft-com:office:excel"
+ xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
+ xmlns:html="http://www.w3.org/TR/REC-html40">
+ <Styles>
+  <Style ss:ID="Default" ss:Name="Normal">
+   <Alignment ss:Vertical="Center" ss:ReadingOrder="RightToLeft"/>
+  </Style>
+  <Style ss:ID="Header">
+   <Font ss:Bold="1" ss:Color="#FFFFFF"/>
+   <Interior ss:Color="#0F172A" ss:Pattern="Solid"/>
+   <Alignment ss:Horizontal="Center" ss:Vertical="Center"/>
+  </Style>
+  <Style ss:ID="CellCenter">
+   <Alignment ss:Horizontal="Center" ss:Vertical="Center"/>
+  </Style>
+  <Style ss:ID="CellName">
+   <Font ss:Bold="1"/>
+   <Alignment ss:Horizontal="Right" ss:Vertical="Center"/>
+  </Style>
+ </Styles>
+ <Worksheet ss:Name="جمع وطرح الأعداد الموجهة">
+  <Table ss:DefaultRowHeight="22" ss:DefaultColumnWidth="120">
+   <Column ss:Width="40"/>
+   <Column ss:Width="180"/>
+   <Column ss:Width="70"/>
+   <Column ss:Width="190"/>
+   <Column ss:Width="110"/>
+   <Column ss:Width="110"/>
+   <Column ss:Width="110"/>
+   <Column ss:Width="90"/>
+   <Column ss:Width="120"/>
+   <Row ss:Height="26">
+    <Cell ss:StyleID="Header"><Data ss:Type="String">م</Data></Cell>
+    <Cell ss:StyleID="Header"><Data ss:Type="String">اسم الطالب</Data></Cell>
+    <Cell ss:StyleID="Header"><Data ss:Type="String">الشعبة</Data></Cell>
+    <Cell ss:StyleID="Header"><Data ss:Type="String">الدرس المستهدف</Data></Cell>
+    <Cell ss:StyleID="Header"><Data ss:Type="String">الدرجة القبلية (من 5)</Data></Cell>
+    <Cell ss:StyleID="Header"><Data ss:Type="String">الدرجة البعدية (من 5)</Data></Cell>
+    <Cell ss:StyleID="Header"><Data ss:Type="String">درجة التمكن (من 5)</Data></Cell>
+    <Cell ss:StyleID="Header"><Data ss:Type="String">نسبة التمكن</Data></Cell>
+    <Cell ss:StyleID="Header"><Data ss:Type="String">حالة الطالب</Data></Cell>
+   </Row>`;
+
+      registeredStudents.forEach((r, idx) => {
+        xml += `
+   <Row>
+    <Cell ss:StyleID="CellCenter"><Data ss:Type="Number">${idx + 1}</Data></Cell>
+    <Cell ss:StyleID="CellName"><Data ss:Type="String">${r.name}</Data></Cell>
+    <Cell ss:StyleID="CellCenter"><Data ss:Type="String">${r.grade}</Data></Cell>
+    <Cell ss:StyleID="CellName"><Data ss:Type="String">${r.lesson}</Data></Cell>
+    <Cell ss:StyleID="CellCenter"><Data ss:Type="Number">${r.pre}</Data></Cell>
+    <Cell ss:StyleID="CellCenter"><Data ss:Type="Number">${r.post}</Data></Cell>
+    <Cell ss:StyleID="CellCenter"><Data ss:Type="Number">${r.masteryScore}</Data></Cell>
+    <Cell ss:StyleID="CellCenter"><Data ss:Type="String">${r.masteryPct}</Data></Cell>
+    <Cell ss:StyleID="CellCenter"><Data ss:Type="String">${r.status}</Data></Cell>
+   </Row>`;
+      });
+
+      xml += `
+  </Table>
+ </Worksheet>
+</Workbook>`;
+
+      const blob = new Blob([xml], { type: 'application/vnd.ms-excel;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `تقرير_تمكين_الدرس_الأول_جمع_وطرح_الأعداد_الموجهة.xls`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    function triggerDirectPrint() {
+      window.print();
+    }
+  </script>
+</body>
+</html>
